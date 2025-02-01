@@ -11,6 +11,7 @@ M.defaults = {
     buffer = {
         scroll_to_bottom = true,
         clear_on_start = true,
+        syntax_highlighting = false,
     },
     debug = false,
 }
@@ -31,6 +32,9 @@ local function validate_config(opts)
         if opts.window.position and not vim.tbl_contains({ "right", "left", "top", "bottom" }, opts.window.position) then
             return false, "window.position must be one of: right, left, top, bottom"
         end
+    end
+    if opts.buffer and type(opts.buffer.syntax_highlighting) ~= "boolean" then
+        return false, "buffer.syntax_highlighting must be a boolean"
     end
     return true
 end

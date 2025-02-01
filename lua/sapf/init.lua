@@ -30,6 +30,9 @@ local function create_sapf_buffer()
     vim.bo[buf].bufhidden = CONSTANTS.BUFFER_HIDDEN
     vim.bo[buf].swapfile = false
     vim.bo[buf].fileformat = "unix"
+    if config.options.buffer.syntax_highlighting then
+        vim.api.nvim_buf_set_option(buf, 'filetype', 'scheme')
+    end
     debug_log("Created new buffer: " .. buf)
     return buf
 end
@@ -95,7 +98,7 @@ local function clean_output_line(line)
     return line
 end
 
-local buffer = "" 
+local buffer = ""
 local function on_stdout(_, data, _)
     if not (data and #data > 0) then return end
     vim.schedule(function()

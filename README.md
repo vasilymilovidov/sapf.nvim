@@ -7,7 +7,7 @@ A Neovim plugin for interacting with [sapf](https://github.com/lfnoise/sapf).
 - `:SapfStop` - Send stop to sapf.
 - `:SapfClear` - Send clear to sapf.
 - `:SapfEvalParagraph` - Evaluate the current paragraph.
-- `:SapfStopAndEval` - Send rtop and evaluate the current paragraph.
+- `:SapfStopAndEval` - Send stop and evaluate the current paragraph.
 - `:SapfRunMultiple` - Evaluate multiple paragraphs.
 - `:SapfFunctionHelp` - Get help for the function under the cursor.
 
@@ -23,6 +23,9 @@ A Neovim plugin for interacting with [sapf](https://github.com/lfnoise/sapf).
           width = 0.4,
           position = "right",
         },
+        buffer = {
+          syntax_highlighting = false, -- toggle syntax highlighting in REPL (uses Scheme highlighting)
+        },
       })
     end,
     keys = {
@@ -35,5 +38,5 @@ A Neovim plugin for interacting with [sapf](https://github.com/lfnoise/sapf).
       { "<leader>or", "<cmd>SapfStopAndEval<cr>", desc = "Send Stop and Reeval" },
       { "<leader>oh", "<cmd>SapfFunctionHelp<cr>", desc = "Function Help" },
     },
-  }
+}
 ```
