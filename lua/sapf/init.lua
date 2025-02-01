@@ -45,6 +45,27 @@ local function create_sapf_window()
         style = 'minimal',
         border = config.options.window.border
     }
+
+    if config.options.window.position == "left" then
+        win_conf.col = 0
+        win_conf.anchor = 'NW'
+    elseif config.options.window.position == "top" then
+        win_conf.height = math.floor(vim.o.lines * config.options.window.width)
+        win_conf.width = vim.o.columns
+        win_conf.row = 0
+        win_conf.col = 0
+        win_conf.anchor = 'NW'
+    elseif config.options.window.position == "bottom" then
+        win_conf.height = math.floor(vim.o.lines * config.options.window.width)
+        win_conf.width = vim.o.columns
+        win_conf.row = vim.o.lines - win_conf.height
+        win_conf.col = 0
+        win_conf.anchor = 'SW'
+    else -- default to "right"
+        win_conf.col = vim.o.columns - win_conf.width
+        win_conf.anchor = 'NE'
+    end
+
     local win = vim.api.nvim_open_win(buffer_id, false, win_conf)
     for option, value in pairs(M.DEFAULT_WINDOW_OPTIONS) do
         vim.wo[win][option] = value
