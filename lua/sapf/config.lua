@@ -1,7 +1,7 @@
 local M = {}
 
 M.defaults = {
-    buffer_name = "sapf",
+    buffer_name = "SAPF Repl",
     interpreter = "sapf",
     window = {
         width = 0.4,
