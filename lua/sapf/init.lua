@@ -35,16 +35,43 @@ local function create_sapf_buffer()
 end
 
 local function create_sapf_window()
+    local width = math.floor(vim.o.columns * config.options.window.width)
+    local height = vim.o.lines - 4
+    local col, row, anchor
+
+    if config.options.window.position == "right" then
+        col = vim.o.columns
+        row = 0
+        anchor = 'NE'
+    elseif config.options.window.position == "left" then
+        col = 0
+        row = 0
+        anchor = 'NW'
+    elseif config.options.window.position == "top" then
+        col = 0
+        row = 0
+        anchor = 'NW'
+        width = vim.o.columns
+        height = math.floor(vim.o.lines * config.options.window.width)
+    elseif config.options.window.position == "bottom" then
+        col = 0
+        row = vim.o.lines
+        anchor = 'SW'
+        width = vim.o.columns
+        height = math.floor(vim.o.lines * config.options.window.width)
+    end
+
     local win_conf = {
         relative = 'editor',
-        width = math.floor(vim.o.columns * config.options.window.width),
-        height = vim.o.lines - 4,
-        col = vim.o.columns,
-        row = 0,
-        anchor = 'NE',
+        width = width,
+        height = height,
+        col = col,
+        row = row,
+        anchor = anchor,
         style = 'minimal',
         border = config.options.window.border
     }
+
     local win = vim.api.nvim_open_win(buffer_id, false, win_conf)
     for option, value in pairs(M.DEFAULT_WINDOW_OPTIONS) do
         vim.wo[win][option] = value

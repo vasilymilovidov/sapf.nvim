@@ -21,6 +21,7 @@ A Neovim plugin for interacting with [sapf](https://github.com/lfnoise/sapf).
         debug = false,
         window = {
           width = 0.4,
+          position = "right",
         },
       })
     end,
