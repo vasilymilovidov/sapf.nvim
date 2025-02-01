@@ -9,7 +9,7 @@ local CONSTANTS = {
 }
 
 M.DEFAULT_WINDOW_OPTIONS = {
-    wrap = false,
+    wrap = true,
     number = false,
     relativenumber = false,
     signcolumn = "no",
@@ -87,20 +87,44 @@ local function ensure_buffer_exists()
     return buffer_id
 end
 
+local function clean_output_line(line)
+    line = line:gsub("{sapf> ", "")
+    line = line:gsub("\\sapf> ", "")
+    line = line:gsub("%(sapf> ", "")
+    line = line:gsub("^%s+", "")
+    return line
+end
+
+local buffer = "" 
 local function on_stdout(_, data, _)
     if not (data and #data > 0) then return end
     vim.schedule(function()
         if not (buffer_id and vim.api.nvim_buf_is_valid(buffer_id)) then return end
-        local lines = vim.tbl_filter(function(line) return line and line ~= "" end, data)
-        if #lines == 0 then return end
-        lines = vim.tbl_map(function(line) return line:gsub("\r", "") end, lines)
-        pcall(function()
-            vim.api.nvim_buf_set_lines(buffer_id, -1, -1, false, lines)
-            local win_id = vim.fn.bufwinid(buffer_id)
-            if win_id ~= -1 then
-                vim.api.nvim_win_set_cursor(win_id, { vim.api.nvim_buf_line_count(buffer_id), 0 })
-            end
-        end)
+
+        local text = table.concat(data, "")
+        buffer = buffer .. text
+
+        local lines = {}
+        for line in buffer:gmatch("[^\r\n]+") do
+            lines[#lines + 1] = clean_output_line(line)
+        end
+
+        if text:match("[\r\n]$") then
+            buffer = ""
+        else
+            buffer = lines[#lines] or ""
+            lines[#lines] = nil
+        end
+
+        if #lines > 0 then
+            pcall(function()
+                vim.api.nvim_buf_set_lines(buffer_id, -1, -1, false, lines)
+                local win_id = vim.fn.bufwinid(buffer_id)
+                if win_id ~= -1 then
+                    vim.api.nvim_win_set_cursor(win_id, { vim.api.nvim_buf_line_count(buffer_id), 0 })
+                end
+            end)
+        end
     end)
 end
 
